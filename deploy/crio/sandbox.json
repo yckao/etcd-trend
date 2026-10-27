@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "name": "etcd-trend",
+    "namespace": "etcd-trend-local",
+    "uid": "etcd-trend-session-001",
+    "attempt": 0
+  },
+  "log_directory": "/srv/etcd-trend/logs",
+  "linux": {
+    "cgroup_parent": "etcd-trend.slice",
+    "security_context": {
+      "namespace_options": { "network": 2, "pid": 1, "ipc": 0 }
+    }
+  }
+}

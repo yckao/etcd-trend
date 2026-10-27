@@ -1,0 +1,23 @@
+package main
+import (
+ "bytes"
+ "encoding/json"
+ "os"
+ corev1 "k8s.io/api/core/v1"
+ metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+ "k8s.io/apimachinery/pkg/runtime/serializer/protobuf"
+ "k8s.io/apimachinery/pkg/types"
+)
+func main() {
+ controller:=true
+ pod:=&corev1.Pod{
+  TypeMeta: metav1.TypeMeta{APIVersion:"v1",Kind:"Pod"},
+  ObjectMeta:metav1.ObjectMeta{Name:"worker-0",Namespace:"tenant-blue",UID:types.UID("pod-uid-001"),Labels:map[string]string{"tenant":"blue","app.kubernetes.io/name":"orders","unselected":"do-not-export"},Annotations:map[string]string{"private":"annotation-not-exported"},OwnerReferences:[]metav1.OwnerReference{{APIVersion:"apps/v1",Kind:"ReplicaSet",Name:"orders-abc",UID:types.UID("replicaset-uid-001"),Controller:&controller}},ManagedFields:[]metav1.ManagedFieldsEntry{{Manager:"kubelet",Operation:"Update"},{Manager:"rollout-controller",Operation:"Apply"},{Manager:"kubelet",Operation:"Update"}}},
+  Spec:corev1.PodSpec{Containers:[]corev1.Container{{Name:"worker",Image:"example.invalid/worker:v1",Env:[]corev1.EnvVar{{Name:"PRIVATE",Value:"spec-not-exported"}}}}},
+ }
+ var b bytes.Buffer
+ if err:=protobuf.NewSerializer(nil,nil).Encode(pod,&b);err!=nil{panic(err)}
+ if err:=os.WriteFile(os.Args[1]+"/upstream-pod.pb",b.Bytes(),0600);err!=nil{panic(err)}
+ data,err:=json.Marshal(pod);if err!=nil{panic(err)}
+ if err=os.WriteFile(os.Args[1]+"/upstream-pod.json",data,0600);err!=nil{panic(err)}
+}

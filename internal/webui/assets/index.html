@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>etcd trend · Offline explorer</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand"><span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>etcd <strong>trend</strong></span><span class="product-label">EXPLORER</span></div>
+    <div class="header-tools"><span class="offline-badge"><span></span>Offline · local data</span><button id="theme" class="icon-button" type="button" aria-label="Toggle color theme">◐</button></div>
+  </header>
+  <main>
+    <div id="fatal" role="alert" class="fatal hidden"></div>
+    <section class="page-heading">
+      <div><p class="eyebrow">REPLAY ANALYSIS</p><h1>Understand where space goes.</h1><p class="subtitle">Explore the storage curve, isolate an interval, and trace its contributors.</p></div>
+      <div class="dataset-meta"><span id="source-version">Source —</span><span id="engine-version">Engine —</span><span id="window-count">— windows</span></div>
+    </section>
+    <section class="stats-grid" aria-label="Selected interval summary">
+      <article class="stat"><span class="stat-label">DB SIZE <span class="dot blue"></span></span><strong id="stat-db">—</strong><span id="stat-db-delta" class="stat-note">At interval end</span></article>
+      <article class="stat"><span class="stat-label">IN USE <span class="dot mint"></span></span><strong id="stat-inuse">—</strong><span id="stat-inuse-delta" class="stat-note">Allocated pages in use</span></article>
+      <article class="stat"><span class="stat-label">REUSABLE FREE SPACE <span class="dot amber"></span></span><strong id="stat-free">—</strong><span id="stat-free-delta" class="stat-note">DB size − in-use size</span></article>
+      <article class="stat"><span class="stat-label">FREE / DB <span class="dot pink"></span></span><strong id="stat-ratio">—</strong><span class="stat-note">Page-level fragmentation indicator</span></article>
+    </section>
+    <section class="panel curve-panel">
+      <div class="panel-heading"><div><p class="eyebrow">01 / TIMELINE</p><h2>Storage over time</h2></div><div class="segmented" role="group" aria-label="Chart view"><button id="capacity-mode" class="active" type="button">Capacity</button><button id="fragmentation-mode" type="button">Fragmentation</button></div></div>
+      <div class="chart-legend"><span><i class="blue"></i>DB size</span><span><i class="mint"></i>In use</span><span><i class="amber"></i>Reusable free</span><span><i class="pink dashed"></i>Free / DB</span><span class="chart-hint">Drag across the chart to select an interval</span></div>
+      <div class="chart-wrap"><svg id="main-chart" role="img" aria-label="Database size and fragmentation over virtual replay time" viewBox="0 0 1120 300" preserveAspectRatio="none"></svg><div id="chart-tooltip" class="tooltip hidden"></div></div>
+      <div class="range-toolbar"><div class="selection-summary"><span class="selection-mark"></span><strong id="range-label">Loading replay…</strong><span id="range-resolution"></span></div><button id="reset-range" class="text-button" type="button">Select all</button></div>
+      <div class="range-inputs"><label>First window <input id="from-window" type="number" min="0" value="0"></label><label>Through window <input id="to-window" type="number" min="0" value="0"></label><span class="range-help">Inclusive window numbers. Times follow the replay’s virtual clock.</span></div>
+    </section>
+    <div class="analysis-grid">
+      <section class="panel contributors-panel">
+        <div class="panel-heading"><div><p class="eyebrow">02 / CONTRIBUTORS</p><h2>What changed in this interval?</h2></div><span id="rank-status" class="subtle" aria-live="polite"></span></div>
+        <div class="ranking-controls"><div class="segmented" role="group" aria-label="Ranking scope"><button id="resource-scope" class="active" type="button">Resources</button><button id="object-scope" type="button">Objects</button></div><div class="metric-label"><label for="metric">Rank by</label><select id="metric"><option value="writes">Value bytes written</option><option value="history">Retained-history growth</option><option value="retained">Retained-record growth</option><option value="compacted">Compaction removed</option><option value="db-growth">Estimated DB growth</option><option value="free-growth">Estimated free growth</option><option value="free-net">Estimated net free growth</option></select></div></div>
+        <div class="aggregation-controls">
+          <label for="group-scope">Group by<select id="group-scope"><option value="resource">Resource / storage prefix</option><option value="object">Object</option><option value="namespace">Namespace</option><option value="api-group">API group</option><option value="kind">Kind</option><option value="label">Object label</option><option value="namespace-label">Namespace label</option><option value="controller">Controller owner</option><option value="manager">Managed-fields manager set</option></select></label>
+          <label for="namespace-filter">Namespace filter<input id="namespace-filter" type="search" placeholder="All namespaces" autocomplete="off"></label>
+          <label for="label-key">Configured label key<select id="label-key"><option value="">No labels recorded</option></select></label>
+          <label for="label-value">Object label value<input id="label-value" type="text" placeholder="Exact value (empty allowed)" autocomplete="off"></label>
+          <label class="checkbox-label"><input id="label-filter-enabled" type="checkbox">Filter object label by this value</label>
+        </div>
+        <div class="search-row"><label class="search-field"><span aria-hidden="true">⌕</span><input id="rank-search" type="search" placeholder="Filter contributors…" aria-label="Filter contributors"></label><button id="resource-filter" class="filter-chip hidden" type="button"></button><button id="group-filter" class="filter-chip hidden" type="button"></button></div>
+        <p id="attribution-note" class="metric-description"></p>
+        <p id="metric-description" class="metric-description"></p>
+        <div id="rank-error" class="inline-error hidden" role="alert"></div>
+        <div class="table-wrap"><table class="rank-table"><thead><tr><th class="rank-number">#</th><th id="identity-heading">RESOURCE / STORAGE PREFIX</th><th class="number">BYTES</th><th class="number">SHARE</th><th class="arrow-cell"></th></tr></thead><tbody id="rank-body"></tbody></table></div>
+        <div id="rank-empty" class="empty-state hidden"><span>—</span><strong>No positive contributors</strong><p>Try another metric or expand the selected interval.</p></div>
+        <div class="table-footer"><span id="rank-denominator" class="subtle"></span><div class="pagination"><button id="rank-prev" class="text-button" type="button">← Previous</button><span id="rank-page"></span><button id="rank-next" class="text-button" type="button">Next →</button></div></div>
+      </section>
+      <aside class="panel object-search-panel">
+        <div class="panel-heading"><div><p class="eyebrow">03 / DRILL DOWN</p><h2>Find an object</h2></div></div>
+        <p class="subtle">Search all observed keys, including objects with no activity in this interval.</p>
+        <label class="search-field"><span aria-hidden="true">⌕</span><input id="object-search" type="search" placeholder="Namespace, name, or full key…" aria-label="Find an object"></label>
+        <div id="object-search-error" class="inline-error hidden" role="alert"></div><div id="object-list" class="object-list"></div>
+        <div class="table-footer"><span id="object-count" class="subtle"></span><button id="more-objects" class="text-button" type="button">More →</button></div>
+        <div class="model-note"><span class="note-icon">i</span><div><strong>Keep the evidence in view</strong><p>MVCC byte counts are measured. Physical contributions are shared-commit estimates; unexplained changes stay unattributed.</p><button id="model-toggle" class="text-button" type="button">View model details</button></div></div>
+        <p id="model-details" class="model-details hidden"></p>
+      </aside>
+    </div>
+    <section id="interval-summary" class="interval-footnote" aria-live="polite"></section>
+    <footer>etcd trend <span>Offline replay explorer · No external assets or APIs</span><span id="data-resolution"></span></footer>
+  </main>
+  <div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
+  <aside id="object-drawer" class="object-drawer hidden" role="dialog" aria-modal="true" aria-labelledby="object-title" tabindex="-1">
+    <div class="drawer-header"><div><p class="eyebrow">OBJECT DETAIL</p><h2 id="object-title">Object</h2></div><button id="close-drawer" class="icon-button" type="button" aria-label="Close object details">×</button></div>
+    <div id="detail-error" class="inline-error hidden" role="alert"></div><div id="detail-content"><p id="object-key" class="object-key"></p><div id="object-badges" class="object-badges"></div><p id="detail-range" class="subtle"></p><p class="subtle">Full object history for this interval; ranking tenant/label filters do not apply.</p><details class="metadata-panel" open><summary>Kubernetes metadata at interval end</summary><dl id="object-metadata"></dl><p id="metadata-note" class="subtle"></p></details><div id="object-stats" class="object-stats"></div><h3>Retained records & history</h3><div class="detail-legend"><span><i class="blue"></i>Retained MVCC</span><span><i class="mint"></i>Live record</span><span><i class="amber"></i>History</span></div><div class="detail-chart-wrap"><svg id="object-chart" viewBox="0 0 700 230" role="img" aria-label="Selected object retained live and historical record bytes"></svg></div><div id="object-impact" class="object-impact"></div><h3>Changes by window</h3><p class="subtle">Quiet windows carry stock forward. Physical estimates follow the commit that exposes the change.</p><div class="table-wrap"><table class="detail-table"><thead><tr><th>VIRTUAL TIME</th><th class="number">PUT / DEL</th><th class="number">WRITTEN</th><th class="number">COMPACTED</th><th class="number">EST. NET FREE</th></tr></thead><tbody id="object-changes"></tbody></table></div><p id="detail-sampling" class="subtle"></p></div>
+  </aside>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "metadata": { "name": "etcd-trend-recorder", "attempt": 0 },
+  "image": { "image": "ghcr.io/yckao/etcd-trend:latest" },
+  "command": ["/usr/local/bin/etcd-trend"],
+  "args": [
+    "record",
+    "--wal-dir", "/source/wal",
+    "--snapshot", "/source/baseline.db",
+    "--etcd-version", "3.6.0",
+    "--out", "/captures/session-001",
+    "--duration", "1h"
+  ],
+  "log_path": "recorder.log",
+  "mounts": [
+    { "host_path": "/var/lib/etcd/member/wal", "container_path": "/source/wal", "readonly": true, "selinux_relabel": false },
+    { "host_path": "/srv/etcd-trend/baselines/baseline.db", "container_path": "/source/baseline.db", "readonly": true, "selinux_relabel": false },
+    { "host_path": "/srv/etcd-trend/captures", "container_path": "/captures", "readonly": false, "selinux_relabel": false },
+    { "host_path": "/srv/etcd-trend/tmp-recorder", "container_path": "/tmp", "readonly": false, "selinux_relabel": false }
+  ],
+  "linux": {
+    "security_context": {
+      "run_as_user": { "value": 0 },
+      "run_as_group": { "value": 0 },
+      "readonly_rootfs": true,
+      "no_new_privs": true
+    }
+  }
+}
