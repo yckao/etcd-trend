@@ -24,8 +24,8 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/proxy/tcpproxy"
 	"go.etcd.io/etcd/client/pkg/v3/logutil"
-	"go.etcd.io/etcd/server/v3/proxy/tcpproxy"
 )
 
 var (

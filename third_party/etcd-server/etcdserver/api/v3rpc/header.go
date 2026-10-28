@@ -15,9 +15,9 @@
 package v3rpc
 
 import (
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/apply"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
-	"go.etcd.io/etcd/server/v3/etcdserver"
-	"go.etcd.io/etcd/server/v3/etcdserver/apply"
 )
 
 type header struct {

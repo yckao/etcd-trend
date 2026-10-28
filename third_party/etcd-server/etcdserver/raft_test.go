@@ -24,11 +24,11 @@ import (
 
 	"go.uber.org/zap/zaptest"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/mock/mockstorage"
+	serverstorage "github.com/yckao/etcd-trend/third_party/etcd-server/storage"
 	"go.etcd.io/etcd/client/pkg/v3/types"
 	"go.etcd.io/etcd/pkg/v3/pbutil"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/mock/mockstorage"
-	serverstorage "go.etcd.io/etcd/server/v3/storage"
 	"go.etcd.io/raft/v3"
 	"go.etcd.io/raft/v3/raftpb"
 )

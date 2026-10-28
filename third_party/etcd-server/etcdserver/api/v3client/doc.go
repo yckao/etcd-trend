@@ -19,8 +19,8 @@
 //	import (
 //		"context"
 //
-//		"go.etcd.io/etcd/server/v3/embed"
-//		"go.etcd.io/etcd/server/v3/etcdserver/api/v3client"
+//		"github.com/yckao/etcd-trend/third_party/etcd-server/embed"
+//		"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3client"
 //	)
 //
 //	...

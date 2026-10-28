@@ -24,13 +24,13 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/rafthttp"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/errors"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease/leasehttp"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/etcdserver"
-	"go.etcd.io/etcd/server/v3/etcdserver/api"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/rafthttp"
-	"go.etcd.io/etcd/server/v3/etcdserver/errors"
-	"go.etcd.io/etcd/server/v3/lease/leasehttp"
 )
 
 const (

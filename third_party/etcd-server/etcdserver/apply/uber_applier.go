@@ -20,15 +20,15 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/auth"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3alarm"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/cindex"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/txn"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/mvcc"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
-	"go.etcd.io/etcd/server/v3/auth"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v3alarm"
-	"go.etcd.io/etcd/server/v3/etcdserver/cindex"
-	"go.etcd.io/etcd/server/v3/etcdserver/txn"
-	"go.etcd.io/etcd/server/v3/lease"
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	"go.etcd.io/etcd/server/v3/storage/mvcc"
 )
 
 type UberApplier interface {

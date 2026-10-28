@@ -24,7 +24,7 @@ package main
 import (
 	"os"
 
-	"go.etcd.io/etcd/server/v3/etcdmain"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdmain"
 )
 
 func main() {

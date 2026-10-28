@@ -1,32 +1,21 @@
-package main
+package tuicmd
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"os"
-	"os/signal"
-	"syscall"
 
+	"github.com/yckao/etcd-trend/internal/cli/stdio"
 	"github.com/yckao/etcd-trend/internal/explore"
 	"github.com/yckao/etcd-trend/internal/tui"
 	"golang.org/x/term"
 )
 
-func main() {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
-	if err := run(ctx, os.Args[1:], os.Stdin, os.Stdout, os.Stderr); err != nil && !errors.Is(err, flag.ErrHelp) {
-		fmt.Fprintln(os.Stderr, "tui:", err)
-		os.Exit(1)
-	}
-}
-
-func run(ctx context.Context, args []string, in, out *os.File, stderr io.Writer) error {
-	fs := flag.NewFlagSet("etcd-trend-tui", flag.ContinueOnError)
-	fs.SetOutput(stderr)
+func Run(ctx context.Context, args []string, streams stdio.Streams) error {
+	streams = streams.WithDefaults()
+	stdin, stdout, stderr := streams.In, streams.Out, streams.Err
+	fs := stdio.Flags("tui", stderr)
 	runDir := fs.String("run", "", "completed replay output directory")
 	cache := fs.String("cache", "", "new derived-index directory; default uses a temporary directory")
 	snapshot := fs.Bool("snapshot", false, "print a plain-text snapshot without entering terminal mode")
@@ -46,7 +35,7 @@ func run(ctx context.Context, args []string, in, out *os.File, stderr io.Writer)
 		return err
 	}
 	if fs.NArg() != 0 || *runDir == "" {
-		return fmt.Errorf("usage: etcd-trend-tui --run DIR [--snapshot] [--from N --to N] [--metric METRIC]")
+		return fmt.Errorf("usage: etcd-trend tui --run DIR [--snapshot] [--from N --to N] [--metric METRIC]")
 	}
 	if *width < 20 || *width > 500 || *height < 5 || *height > 200 {
 		return fmt.Errorf("snapshot dimensions must be width20-500 and height5-200")
@@ -64,7 +53,7 @@ func run(ctx context.Context, args []string, in, out *os.File, stderr io.Writer)
 		return fmt.Errorf("range must satisfy 0 <= from < to, or to=-1 for the end")
 	}
 	if !*snapshot {
-		if !term.IsTerminal(int(in.Fd())) || !term.IsTerminal(int(out.Fd())) {
+		if !terminal(stdin) || !terminal(stdout) {
 			return fmt.Errorf("interactive TUI requires a terminal; use --snapshot for plain output")
 		}
 		if _, err := fmt.Fprintln(stderr, "Preparing offline analysis index..."); err != nil {
@@ -84,7 +73,12 @@ func run(ctx context.Context, args []string, in, out *os.File, stderr io.Writer)
 	})
 	cfg := tui.Config{Namespace: *namespace, LabelKey: *labelKey, LabelValue: *labelValue, LabelFilter: labelFilter, Metadata: *metadata, From: *from, To: *to, Metric: *metric, Scope: *scope, Search: *search, ObjectID: *object, Width: *width, Height: *height}
 	if *snapshot {
-		return tui.Snapshot(ctx, store, cfg, out)
+		return tui.Snapshot(ctx, store, cfg, stdout)
 	}
-	return tui.Run(ctx, store, cfg, in, out)
+	return tui.Run(ctx, store, cfg, stdin.(*os.File), stdout.(*os.File))
+}
+
+func terminal(stream any) bool {
+	f, ok := stream.(*os.File)
+	return ok && term.IsTerminal(int(f.Fd()))
 }

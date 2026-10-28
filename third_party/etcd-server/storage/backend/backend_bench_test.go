@@ -21,8 +21,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	betesting "go.etcd.io/etcd/server/v3/storage/backend/testing"
-	"go.etcd.io/etcd/server/v3/storage/schema"
+	betesting "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend/testing"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 )
 
 func BenchmarkBackendPut(b *testing.B) {

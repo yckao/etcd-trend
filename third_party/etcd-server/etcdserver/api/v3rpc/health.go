@@ -19,8 +19,8 @@ import (
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
-	"go.etcd.io/etcd/server/v3/etcdserver"
-	"go.etcd.io/etcd/server/v3/features"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/features"
 )
 
 const (

@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
 	"go.etcd.io/etcd/api/v3/version"
-	"go.etcd.io/etcd/server/v3/etcdserver"
 )
 
 const (

@@ -29,11 +29,11 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"
 
+	stats "github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v2stats"
 	"go.etcd.io/etcd/api/v3/version"
 	"go.etcd.io/etcd/client/pkg/v3/transport"
 	"go.etcd.io/etcd/client/pkg/v3/types"
 	"go.etcd.io/etcd/pkg/v3/httputil"
-	stats "go.etcd.io/etcd/server/v3/etcdserver/api/v2stats"
 	"go.etcd.io/raft/v3/raftpb"
 )
 

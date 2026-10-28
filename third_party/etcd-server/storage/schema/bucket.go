@@ -17,8 +17,8 @@ package schema
 import (
 	"bytes"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/storage/backend"
 )
 
 var (

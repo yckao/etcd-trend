@@ -17,11 +17,11 @@ package v3rpc
 import (
 	"context"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/api/v3/v3rpc/rpctypes"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/etcdserver"
-	"go.etcd.io/etcd/server/v3/storage"
 )
 
 type quotaKVServer struct {

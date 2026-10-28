@@ -1,4 +1,4 @@
-// Package loadtest measures the recorder and analyzer as separate processes
+// Package loadtest measures record and replay as separate processes
 // against a private loopback fixture. It never accepts a production endpoint.
 package loadtest
 
@@ -23,6 +23,8 @@ import (
 )
 
 type Config struct {
+	// Recorder and Analyzer optionally name legacy standalone executables.
+	// Empty values run this executable's record and replay subcommands.
 	Dir, Recorder, Analyzer string
 	Duration                time.Duration
 	BytesPerSecond          int64
@@ -30,6 +32,17 @@ type Config struct {
 	Workload                string
 	RecordOnly              bool
 	CompactionInterval      time.Duration
+}
+
+func childCommand(ctx context.Context, legacy, subcommand string, args ...string) (*exec.Cmd, error) {
+	if legacy != "" {
+		return exec.CommandContext(ctx, legacy, args...), nil
+	}
+	executable, err := os.Executable()
+	if err != nil {
+		return nil, fmt.Errorf("locate current executable: %w", err)
+	}
+	return exec.CommandContext(ctx, executable, append([]string{subcommand}, args...)...), nil
 }
 
 type Process struct {
@@ -126,7 +139,10 @@ func Run(ctx context.Context, cfg Config) (*Summary, error) {
 		return nil, err
 	}
 	defer recErr.Close()
-	rec := exec.CommandContext(ctx, cfg.Recorder, "--wal-dir", source.WALDir, "--snapshot", source.BaseDB, "--out", captureDir, "--poll-interval", "100ms", "--etcd-version", "3.6.0")
+	rec, err := childCommand(ctx, cfg.Recorder, "record", "--wal-dir", source.WALDir, "--snapshot", source.BaseDB, "--out", captureDir, "--poll-interval", "100ms", "--etcd-version", "3.6.0")
+	if err != nil {
+		return nil, err
+	}
 	rec.Stdout = recLog
 	stderr, err := rec.StderrPipe()
 	if err != nil {
@@ -268,7 +284,10 @@ func Run(ctx context.Context, cfg Config) (*Summary, error) {
 	}
 	defer anErr.Close()
 	output := filepath.Join(cfg.Dir, "replay")
-	an := exec.CommandContext(ctx, cfg.Analyzer, "--capture", captureDir, "--out", output, "--speed", "max", "--index-dir", filepath.Join(cfg.Dir, "index"), "--compaction-batch-limit", "16", "--compaction-sleep", "1ms")
+	an, err := childCommand(ctx, cfg.Analyzer, "replay", "--capture", captureDir, "--out", output, "--speed", "max", "--index-dir", filepath.Join(cfg.Dir, "index"), "--compaction-batch-limit", "16", "--compaction-sleep", "1ms")
+	if err != nil {
+		return nil, err
+	}
 	an.Stdout, an.Stderr = anLog, anErr
 	anStarted := time.Now()
 	if err := an.Run(); err != nil {

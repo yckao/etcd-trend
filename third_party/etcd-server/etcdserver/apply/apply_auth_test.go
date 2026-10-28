@@ -24,18 +24,18 @@ import (
 	"go.uber.org/zap/zaptest"
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/auth"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3alarm"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/cindex"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease"
+	betesting "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend/testing"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/mvcc"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 	"go.etcd.io/etcd/api/v3/authpb"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/api/v3/membershippb"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/auth"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v3alarm"
-	"go.etcd.io/etcd/server/v3/etcdserver/cindex"
-	"go.etcd.io/etcd/server/v3/lease"
-	betesting "go.etcd.io/etcd/server/v3/storage/backend/testing"
-	"go.etcd.io/etcd/server/v3/storage/mvcc"
-	"go.etcd.io/etcd/server/v3/storage/schema"
 )
 
 func dummyIndexWaiter(_ uint64) <-chan struct{} {

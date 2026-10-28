@@ -21,10 +21,10 @@ import (
 
 	"go.uber.org/zap/zaptest"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/rafthttp"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/snap"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/rafthttp"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/snap"
 	"go.etcd.io/raft/v3/raftpb"
 )
 

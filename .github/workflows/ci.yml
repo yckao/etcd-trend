@@ -25,15 +25,26 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: '1.26.5'
-          cache-dependency-path: |
-            go.sum
-            third_party/etcd-server/go.sum
+          cache-dependency-path: go.sum
       - name: Race tests and vet
         run: |
           go test -race ./...
           go vet ./...
           make build
-          scripts/test-container-entrypoint.sh
+          bin/etcd-trend help
+      - name: Install published Go module outside the checkout
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          REVISION: ${{ github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/go-install-check/work" "$RUNNER_TEMP/go-install-check/bin"
+          cd "$RUNNER_TEMP/go-install-check/work"
+          GOWORK=off GOBIN="$RUNNER_TEMP/go-install-check/bin" go install "github.com/yckao/etcd-trend@$REVISION"
+          "$RUNNER_TEMP/go-install-check/bin/etcd-trend" help
+          "$RUNNER_TEMP/go-install-check/bin/etcd-trend" replay --help
+          "$RUNNER_TEMP/go-install-check/bin/etcd-trend" loadtest \
+            --out "$RUNNER_TEMP/go-install-check/run" --duration 250ms \
+            --bytes-per-second 131072 --value-bytes 4096 --keys 3
       - name: Web interaction tests
         run: |
           npm install --prefix "$RUNNER_TEMP/etcd-trend-ui-tests" --ignore-scripts --no-audit --no-fund jsdom@26.1.0

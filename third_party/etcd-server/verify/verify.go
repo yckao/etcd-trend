@@ -19,13 +19,13 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/datadir"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
+	wal2 "github.com/yckao/etcd-trend/third_party/etcd-server/storage/wal"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/wal/walpb"
 	"go.etcd.io/etcd/client/pkg/v3/fileutil"
 	"go.etcd.io/etcd/client/pkg/v3/verify"
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	"go.etcd.io/etcd/server/v3/storage/datadir"
-	"go.etcd.io/etcd/server/v3/storage/schema"
-	wal2 "go.etcd.io/etcd/server/v3/storage/wal"
-	"go.etcd.io/etcd/server/v3/storage/wal/walpb"
 	"go.etcd.io/raft/v3/raftpb"
 )
 

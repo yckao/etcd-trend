@@ -13,9 +13,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/embed"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"go.etcd.io/etcd/server/v3/embed"
 	"go.uber.org/zap"
 )
 

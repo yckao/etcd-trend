@@ -1,4 +1,4 @@
-package main
+package inspectcmd
 
 import (
 	"bytes"
@@ -6,11 +6,13 @@ import (
 	"errors"
 	"flag"
 	"testing"
+
+	"github.com/yckao/etcd-trend/internal/cli/stdio"
 )
 
 func TestHelpDoesNotOpenRun(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	if err := run(context.Background(), []string{"--help"}, &stdout, &stderr); !errors.Is(err, flag.ErrHelp) {
+	if err := Run(context.Background(), []string{"--help"}, stdio.Streams{Out: &stdout, Err: &stderr}); !errors.Is(err, flag.ErrHelp) {
 		t.Fatalf("help: %v", err)
 	}
 	if stderr.Len() == 0 || stdout.Len() != 0 {
@@ -21,7 +23,7 @@ func TestHelpDoesNotOpenRun(t *testing.T) {
 func TestInvalidWindow(t *testing.T) {
 	for _, value := range []string{"-1", "1.2", "later"} {
 		var stdout, stderr bytes.Buffer
-		if err := run(context.Background(), []string{"--run", "missing", "--window", value}, &stdout, &stderr); err == nil {
+		if err := Run(context.Background(), []string{"--run", "missing", "--window", value}, stdio.Streams{Out: &stdout, Err: &stderr}); err == nil {
 			t.Fatalf("accepted %q", value)
 		}
 	}

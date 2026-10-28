@@ -18,9 +18,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/rafthttp"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/rafthttp"
 )
 
 // isConnectedToQuorumSince checks whether the local member is connected to the

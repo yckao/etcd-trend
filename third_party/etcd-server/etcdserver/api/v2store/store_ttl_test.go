@@ -22,7 +22,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v2error"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v2error"
 )
 
 // TestMinExpireTime ensures that any TTL <= minExpireTime becomes Permanent

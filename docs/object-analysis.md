@@ -4,13 +4,15 @@ Object analysis follows the actual MVCC mutations made during offline replay. It
 
 ## Run and inspect
 
+Replay and inspection are subcommands of the same `etcd-trend` executable. The examples use the local `make build` output; a binary installed with `go install github.com/yckao/etcd-trend@latest` uses the same arguments.
+
 ```sh
-bin/analyzer --capture captures/session --out runs/analyzed \
+bin/etcd-trend replay --capture captures/session --out runs/analyzed \
   --speed max --window 1m --top 20
 
-bin/etcd-trend-inspect --run runs/analyzed --window 0 --metric history
-bin/etcd-trend-inspect --run runs/analyzed --window 0 --metric db-growth
-bin/etcd-trend-inspect --run runs/analyzed --window 0 --metric free-net
+bin/etcd-trend inspect --run runs/analyzed --window 0 --metric history
+bin/etcd-trend inspect --run runs/analyzed --window 0 --metric db-growth
+bin/etcd-trend inspect --run runs/analyzed --window 0 --metric free-net
 ```
 
 Object analysis is enabled by default in the analyzer CLI. `--object-analysis=false` runs the storage simulation without attribution. Library callers enable it explicitly with `replay.Config.AnalyzeObjects`. `--window` uses virtual source time, independent of playback speed. Window numbers in the inspector start at zero. `--scope object` or `--scope resource` limits the displayed ranking; the default displays both. `--limit` cannot recover ranks discarded by replay's `--top` setting; all contributor rows remain in JSONL.
@@ -122,7 +124,7 @@ Path rules were checked against pinned Kubernetes source:
 `object-analysis-v3` includes selected metadata in object rows and baseline/final inventories. The viewers also accept older v2 outputs, reporting metadata as not recorded. Metadata extraction happens entirely during offline replay; the recorder needs no Kubernetes API credentials, discovery, List, or Watch.
 
 ```sh
-bin/analyzer --capture captures/session --out runs/tenants \
+bin/etcd-trend replay --capture captures/session --out runs/tenants \
   --speed max --window 5s --top 20 \
   --label-key example.com/tenant --label-key example.com/team \
   --label-key app.kubernetes.io/name,app.kubernetes.io/part-of

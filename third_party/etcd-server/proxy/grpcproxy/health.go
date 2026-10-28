@@ -23,9 +23,9 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/etcdhttp"
 	"go.etcd.io/etcd/api/v3/v3rpc/rpctypes"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/etcdhttp"
 )
 
 // HandleHealth registers health handler on '/health'.

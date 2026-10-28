@@ -18,8 +18,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 	"go.etcd.io/etcd/client/pkg/v3/verify"
-	"go.etcd.io/etcd/server/v3/storage/backend"
 )
 
 // UnsafeCreateMetaBucket creates the `meta` bucket (if it does not exist yet).

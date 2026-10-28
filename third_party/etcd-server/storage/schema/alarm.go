@@ -17,8 +17,8 @@ package schema
 import (
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 	"go.etcd.io/etcd/api/v3/etcdserverpb"
-	"go.etcd.io/etcd/server/v3/storage/backend"
 )
 
 type AlarmBackend interface {

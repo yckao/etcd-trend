@@ -8,16 +8,15 @@ ARG TARGETOS
 ARG TARGETARCH
 WORKDIR /src
 COPY go.mod go.sum ./
-COPY third_party/etcd-server/go.mod third_party/etcd-server/go.sum ./third_party/etcd-server/
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
-COPY cmd ./cmd
+COPY main.go ./
 COPY internal ./internal
 COPY third_party/etcd-server ./third_party/etcd-server
 COPY container/collect-licenses.sh /collect-licenses.sh
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
-    go build -trimpath -ldflags='-s -w' -o /out/ ./cmd/...
+    go build -trimpath -ldflags='-s -w' -o /out/etcd-trend .
 RUN --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     sh /collect-licenses.sh /licenses
@@ -31,10 +30,9 @@ LABEL org.opencontainers.image.title="etcd trend" \
       org.opencontainers.image.source=${SOURCE} \
       org.opencontainers.image.version=${VERSION} \
       org.opencontainers.image.revision=${REVISION}
-COPY --from=build /out/ /usr/local/bin/
+COPY --from=build /out/etcd-trend /usr/local/bin/etcd-trend
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /licenses/ /usr/share/licenses/etcd-trend/
-COPY --chmod=0755 container/entrypoint.sh /usr/local/bin/etcd-trend
 COPY third_party/etcd-server/LICENSE /usr/share/licenses/etcd-server/LICENSE
 COPY third_party/etcd-server/REPLAY_PATCHES.md /usr/share/licenses/etcd-server/REPLAY_PATCHES.md
 # Numeric IDs also work when callers supply a host UID:GID at runtime.

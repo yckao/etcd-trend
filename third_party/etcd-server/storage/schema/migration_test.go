@@ -25,9 +25,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	betesting "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend/testing"
 	"go.etcd.io/etcd/api/v3/version"
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	betesting "go.etcd.io/etcd/server/v3/storage/backend/testing"
 )
 
 func TestNewPlan(t *testing.T) {

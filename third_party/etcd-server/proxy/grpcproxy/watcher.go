@@ -17,10 +17,10 @@ package grpcproxy
 import (
 	"time"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/mvcc"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"go.etcd.io/etcd/server/v3/storage/mvcc"
 )
 
 type watchRange struct {

@@ -17,9 +17,9 @@ package v3rpc
 import (
 	"context"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/auth"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
-	"go.etcd.io/etcd/server/v3/auth"
-	"go.etcd.io/etcd/server/v3/etcdserver"
 )
 
 type AuthServer struct {

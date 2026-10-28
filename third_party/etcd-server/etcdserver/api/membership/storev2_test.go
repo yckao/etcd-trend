@@ -22,7 +22,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v2store"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v2store"
 )
 
 func TestIsMetaStoreOnly(t *testing.T) {

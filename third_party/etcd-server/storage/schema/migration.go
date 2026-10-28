@@ -20,8 +20,8 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 	"go.etcd.io/etcd/api/v3/version"
-	"go.etcd.io/etcd/server/v3/storage/backend"
 )
 
 type migrationPlan []migrationStep

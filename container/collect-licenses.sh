@@ -10,7 +10,7 @@ if [ ! -f "$go_license" ]; then go_license="$go_root/../LICENSE"; fi
 cp "$go_license" "$destination/go/LICENSE"
 module_list=$(mktemp)
 trap 'rm -f "$module_list" "$module_list.sorted"' EXIT HUP INT TERM
-go list -deps -f '{{with .Module}}{{if not .Main}}{{.Path}} {{.Version}} {{.Dir}}{{end}}{{end}}' ./cmd/... > "$module_list"
+go list -deps -f '{{with .Module}}{{if not .Main}}{{.Path}} {{.Version}} {{.Dir}}{{end}}{{end}}' . > "$module_list"
 sort -u "$module_list" > "$module_list.sorted"
 printf 'module\tversion\n' > "$destination/modules.tsv"
 while read -r module version directory; do

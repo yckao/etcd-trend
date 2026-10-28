@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/api/v3/membershippb"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
 )
 
 var legacyMemberPath = regexp.MustCompile(`^/0/members/([0-9a-fA-F]+)/attributes$`)

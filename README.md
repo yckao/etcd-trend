@@ -1,5 +1,8 @@
 # etcd trend
 
+> [!WARNING]
+> This project is currently **pure vibe coding and has not been manually reviewed by a human**. Automated tests and CI results do not substitute for human review.
+
 [![Test and publish image](https://github.com/yckao/etcd-trend/actions/workflows/ci.yml/badge.svg)](https://github.com/yckao/etcd-trend/actions/workflows/ci.yml)
 
 Record an etcd member's WAL and replay its committed operations offline through etcd's MVCC and bbolt backend. The analyzer supports accelerated virtual time so the same capture can be inspected without waiting for its original duration.
@@ -9,6 +12,17 @@ The recorder reads WAL files and accepts a consistent baseline from an explicit 
 The recorder and analyzer accept stable etcd **3.4.x, 3.5.x, and 3.6.x** sources. Offline storage simulation uses a pinned **3.6.0** engine with explicit adapters for older internal metadata. Source compatibility means interpreting and validating captured logical history; physical space curves are produced by the selected 3.6.0 model. The source member does not need patches. Calibration is optional.
 
 See [the design](docs/design.md) for the capture contract, virtual scheduler, and implementation boundaries.
+
+## Install a single binary
+
+```sh
+go install github.com/yckao/etcd-trend@latest
+etcd-trend help
+```
+
+The installed `etcd-trend` executable contains `record`, `replay`, `web`, `tui`, `inspect`, `demo`, `loadtest`, and `compat`. The Web assets and modified replay engine are compiled into it; companion executables and a local source checkout are not required. Replace `@latest` with a commit or release version to pin an installation. The `loadtest` command invokes this same executable for its recorder and analyzer child processes.
+
+The source-build examples below use `bin/etcd-trend`; with `go install`, use `etcd-trend` from your Go binary directory instead. Previous standalone executable names have been replaced by subcommands, for example `analyzer ...` becomes `etcd-trend replay ...`.
 
 ## Build and test
 
@@ -20,6 +34,8 @@ make test
 make vet
 ```
 
+`make build` produces only `bin/etcd-trend`; `make install` installs the current checkout through Go.
+
 The integration test starts its own temporary etcd member on loopback ports. It does not access a kubeconfig or an existing cluster.
 
 ## Record
@@ -28,7 +44,7 @@ Create the capture parent directory, then select an immutable baseline and the m
 
 ```sh
 mkdir -p captures
-bin/recorder \
+bin/etcd-trend record \
   --wal-dir /var/lib/etcd/member/wal \
   --snapshot /consistent-snapshots/baseline.db \
   --etcd-version 3.6.0 \
@@ -52,8 +68,8 @@ The executable must write the consistent image to `CAPTURE_SNAPSHOT_PATH` and ex
 
 ```sh
 mkdir -p runs
-bin/analyzer --capture captures/session --out runs/session-100x --speed 100
-bin/analyzer --capture captures/session --out runs/session-max --speed max
+bin/etcd-trend replay --capture captures/session --out runs/session-100x --speed 100
+bin/etcd-trend replay --capture captures/session --out runs/session-max --speed max
 ```
 
 Each run creates `replay.db`, a compact `report.json`, and streamed `operations.jsonl` / `commits.jsonl`. The report includes source and simulation-engine versions, the final revision and logical hash, observation counts, and observation-file hashes. Commit records contain DB size, in-use size, free pages, and pending pages. Input captures remain unchanged. Outputs must use a new directory.
@@ -61,8 +77,8 @@ Each run creates `replay.db`, a compact `report.json`, and streamed `operations.
 Object analysis is enabled by default. Add `--window 1m --top 20` to select virtual-time windows and ranking depth. `analysis/` contains exact per-object/resource MVCC accounting and estimated shares of physical DB/free-space changes, with an explicit unattributed remainder. Inspect a window directly:
 
 ```sh
-bin/etcd-trend-inspect --run runs/session-max --window 0 --metric history
-bin/etcd-trend-inspect --run runs/session-max --window 0 --metric free-net
+bin/etcd-trend inspect --run runs/session-max --window 0 --metric history
+bin/etcd-trend inspect --run runs/session-max --window 0 --metric free-net
 ```
 
 See [object analysis](docs/object-analysis.md) for metric definitions, allocation formulas, sparse output, and all ranking options. Use `--object-analysis=false` to omit this analysis.
@@ -70,8 +86,8 @@ See [object analysis](docs/object-analysis.md) for metric definitions, allocatio
 For interactive offline exploration, open the same completed run in either interface:
 
 ```sh
-bin/etcd-trend-web --run runs/session-max
-bin/etcd-trend-tui --run runs/session-max
+bin/etcd-trend web --run runs/session-max
+bin/etcd-trend tui --run runs/session-max
 ```
 
 Both provide DB/free-space curves, interval-based resource/object rankings, search, and individual object timelines. The Web UI uses an embedded local server with no external assets. See [offline UI usage](docs/offline-ui.md) for controls, window resolution, and index behavior.
@@ -81,10 +97,10 @@ The TUI supports 60% keyboards without a navigation-key layer: `c` opens the com
 For multi-tenant attribution, extract your chosen label keys while replaying:
 
 ```sh
-bin/analyzer --capture captures/session --out runs/tenants --window 5s \
+bin/etcd-trend replay --capture captures/session --out runs/tenants --window 5s \
   --label-key example.com/tenant --label-key example.com/team
-bin/etcd-trend-web --run runs/tenants
-bin/etcd-trend-tui --run runs/tenants --scope namespace-label \
+bin/etcd-trend web --run runs/tenants
+bin/etcd-trend tui --run runs/tenants --scope namespace-label \
   --label-key example.com/tenant
 ```
 
@@ -98,7 +114,7 @@ Use `--batch-interval`, `--batch-limit`, `--compaction-batch-limit`, and `--comp
 
 ## Single container image
 
-The public image is [`ghcr.io/yckao/etcd-trend:latest`](https://github.com/yckao/etcd-trend/pkgs/container/etcd-trend), with Linux amd64 and arm64 variants under one image reference. Use a published digest for a fixed build. The same image runs each stage:
+The public image is [`ghcr.io/yckao/etcd-trend:latest`](https://github.com/yckao/etcd-trend/pkgs/container/etcd-trend), with Linux amd64 and arm64 variants under one image reference. Use a published digest for a fixed build. The image contains the same single compiled `etcd-trend` executable as `go install`, and uses it directly as its entrypoint. The same image runs each stage:
 
 | Image command | Purpose |
 | --- | --- |
@@ -150,13 +166,13 @@ The recorder exits after its configured duration. Confirm a successful exit and 
 
 ### GitHub Actions and image tags
 
-[The workflow](.github/workflows/ci.yml) runs race tests, vet, builds, Web interaction checks, and container smoke tests on pull requests. Both amd64 and arm64 candidates must pass recording, replay, metadata, TUI snapshot, and graceful-stop checks before publication; arm64 executes under QEMU. Pushes to `main` publish `latest` and a full-commit `sha-...` tag. Version tags such as `v0.1.0` additionally publish `0.1.0` and `0.1`. The published multi-platform image includes provenance and an SBOM. GitHub's repository token supplies GHCR access; no manually configured publishing secret is needed.
+[The workflow](.github/workflows/ci.yml) runs race tests, vet, builds, Web interaction checks, and container smoke tests on pull requests. Published commits also verify `go install` outside the source checkout. Both amd64 and arm64 candidates must pass recording, replay, metadata, TUI snapshot, and graceful-stop checks before publication; arm64 executes under QEMU. Pushes to `main` publish `latest` and a full-commit `sha-...` tag. Version tags such as `v0.1.0` additionally publish `0.1.0` and `0.1`. The published multi-platform image includes provenance and an SBOM. GitHub's repository token supplies GHCR access; no manually configured publishing secret is needed.
 
 ## Run the isolated demonstration
 
 ```sh
 mkdir -p artifacts
-bin/etcd-trend-demo --out artifacts/demo
+bin/etcd-trend demo --out artifacts/demo
 ```
 
 The demo records 240 updates of a 300 KiB value, crosses the native 64 MB WAL segment boundary, and includes successful and failed Txn comparisons, range deletes, retained and revoked leases, and compaction. It compares 1x, 100x, and max replay against the source's complete logical KV state, including revision and lease metadata. It also verifies equal modeled commit boundaries and unchanged capture files. The output directory includes `summary.json`, the raw capture, and individual replay reports.
@@ -168,7 +184,7 @@ The test suite uses smaller fixture-only WAL segments for inexpensive rotation c
 Run an actual release binary in the isolated compatibility fixture:
 
 ```sh
-bin/etcd-trend-compat --etcd-binary /path/to/etcd --out artifacts/compat-run
+bin/etcd-trend compat --etcd-binary /path/to/etcd --out artifacts/compat-run
 ```
 
 The fixture records source version and binary SHA256, generates Txn, lease, delete, and compaction history, then compares 1x, 100x, and max replay against the source's logical state. Serving-cluster upgrade procedures are independent of this offline reader.
@@ -176,7 +192,7 @@ The fixture records source version and binary SHA256, generates Txn, lease, dele
 For a separate-process recorder/analyzer measurement at the production planning rate:
 
 ```sh
-bin/etcd-trend-loadtest --out artifacts/load-run --duration 60s \
+bin/etcd-trend loadtest --out artifacts/load-run --duration 60s \
   --bytes-per-second 2000000
 ```
 
@@ -185,12 +201,12 @@ This starts only a private loopback member. The rate flag targets value bytes; t
 For a longer synthetic Kubernetes workload with five real-time tenant phases:
 
 ```sh
-bin/etcd-trend-loadtest --out artifacts/tenants --workload kubernetes \
+bin/etcd-trend loadtest --out artifacts/tenants --workload kubernetes \
   --duration 10m --bytes-per-second 2000000 --compaction-interval 45s --record-only
-bin/analyzer --capture artifacts/tenants/capture --out artifacts/tenants/replay \
+bin/etcd-trend replay --capture artifacts/tenants/capture --out artifacts/tenants/replay \
   --window 5s --speed max --label-key tenant,team,app.kubernetes.io/name \
   --compaction-batch-limit 16 --compaction-sleep 1ms
-bin/etcd-trend-web --run artifacts/tenants/replay
+bin/etcd-trend web --run artifacts/tenants/replay
 ```
 
 The fixture writes Kubernetes-shaped synthetic values directly to its private etcd, with four namespaces, owner references, manager sets, quiet objects, changing tenant labels, and delete/recreate churn. It does not run Kubernetes controllers. `--record-only` preserves the capture and source digest for separate analyzer runs; zero replay fields in that recording summary mean replay has not run yet. The completed longer run in this workspace is `artifacts/long-multitenant-10m-validated/replay-tenants`.
@@ -216,4 +232,4 @@ An ordinary copy of the live mutable bbolt file is not a snapshot provider. Use 
 
 ## Upstream code
 
-`third_party/etcd-server` contains the etcd v3.6.0 server module with its upstream license. [Local replay changes](third_party/etcd-server/REPLAY_PATCHES.md) are documented alongside it. Other dependencies are pinned in `go.mod` and `go.sum`.
+`third_party/etcd-server` contains the modified etcd v3.6.0 server source with its upstream license. It is part of this project's Go module, so remote installation needs no local `replace` directive. [Local replay changes](third_party/etcd-server/REPLAY_PATCHES.md) are documented alongside it. Other dependencies are pinned in `go.mod` and `go.sum`.

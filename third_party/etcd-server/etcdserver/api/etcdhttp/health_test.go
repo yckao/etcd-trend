@@ -28,13 +28,13 @@ import (
 
 	"go.etcd.io/raft/v3"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/auth"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/config"
+	betesting "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend/testing"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/client/pkg/v3/testutil"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/auth"
-	"go.etcd.io/etcd/server/v3/config"
-	betesting "go.etcd.io/etcd/server/v3/storage/backend/testing"
-	"go.etcd.io/etcd/server/v3/storage/schema"
 )
 
 type fakeHealthServer struct {

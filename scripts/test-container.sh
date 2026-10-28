@@ -31,15 +31,21 @@ run_image() {
 }
 
 test "$(docker image inspect --format '{{.Config.User}}' "$image")" = 65532:65532
-docker_run --rm --network none --read-only "$image" sh -c 'test "$(id -u)" = 65532'
+docker_run --rm --network none --read-only --entrypoint /bin/sh "$image" -c '
+    test "$(id -u)" = 65532
+    test "$(find /usr/local/bin -maxdepth 1 -type f | wc -l)" -eq 1
+    test "$(od -An -t x1 -N 4 /usr/local/bin/etcd-trend | tr -d " \n")" = 7f454c46
+'
 run_image help > "$test_dir/help.txt"
+grep -q 'vibe coding' "$test_dir/help.txt"
+grep -q 'manually reviewed' "$test_dir/help.txt"
 for command in record replay web tui inspect demo loadtest compat; do
     run_image "$command" --help > "$test_dir/$command-help.txt" 2>&1
 done
 
 # Exercise native WAL recording and three playback speeds in the image.
 run_image demo --out /data/demo --updates 12 --value-bytes 4096 --interval 1ms > "$test_dir/demo.stdout.json"
-# Exercise the separately packaged recorder and analyzer executables too.
+# Exercise record/replay child processes launched from the same executable.
 run_image loadtest --out /data/load --workload kubernetes --duration 3s \
     --bytes-per-second 262144 --value-bytes 4096 --keys 8 --record-only > "$test_dir/load.stdout.json"
 run_image replay --capture /data/load/capture --out /data/replay --speed max \
@@ -70,7 +76,7 @@ fi
 docker stop --time 15 "$web_container" > /dev/null
 test "$(docker inspect --format '{{.State.ExitCode}}' "$web_container")" = 0
 
-# Verify PID 1 forwards Docker's SIGTERM to the recorder and seals a capture.
+# Verify the binary running as PID 1 handles SIGTERM and seals a capture.
 record_container=$(docker_run -d --network none --read-only --tmpfs /tmp:rw,nosuid,nodev \
     --user "$(id -u):$(id -g)" -v "$test_dir:/data" "$image" record \
     --wal-dir /data/demo/source-stopped/member/member/wal \

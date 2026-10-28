@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/yckao/etcd-trend/internal/analysis"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/mvcc"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
-	"go.etcd.io/etcd/server/v3/lease"
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	"go.etcd.io/etcd/server/v3/storage/mvcc"
 	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap"
 )

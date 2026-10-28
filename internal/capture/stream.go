@@ -22,9 +22,9 @@ import (
 	"time"
 
 	"github.com/yckao/etcd-trend/internal/etcdutil"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/wal"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/wal/walpb"
 	"go.etcd.io/etcd/api/v3/etcdserverpb"
-	"go.etcd.io/etcd/server/v3/storage/wal"
-	"go.etcd.io/etcd/server/v3/storage/wal/walpb"
 	"go.etcd.io/raft/v3/raftpb"
 )
 

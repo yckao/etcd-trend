@@ -18,8 +18,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"go.etcd.io/etcd/server/v3/lease/leasepb"
-	"go.etcd.io/etcd/server/v3/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease/leasepb"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 )
 
 func UnsafeCreateLeaseBucket(tx backend.UnsafeWriter) {

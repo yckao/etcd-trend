@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 	"go.etcd.io/etcd/api/v3/mvccpb"
-	"go.etcd.io/etcd/server/v3/storage/schema"
 )
 
 // ReplayVisitCurrent streams the current logical keyspace once in byte-key

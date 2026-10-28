@@ -35,6 +35,13 @@ import (
 	"google.golang.org/grpc"
 	"sigs.k8s.io/yaml"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/config"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/rafthttp"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3compactor"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3discovery"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/features"
 	bolt "go.etcd.io/bbolt"
 	"go.etcd.io/etcd/client/pkg/v3/logutil"
 	"go.etcd.io/etcd/client/pkg/v3/srv"
@@ -45,13 +52,6 @@ import (
 	"go.etcd.io/etcd/pkg/v3/featuregate"
 	"go.etcd.io/etcd/pkg/v3/flags"
 	"go.etcd.io/etcd/pkg/v3/netutil"
-	"go.etcd.io/etcd/server/v3/config"
-	"go.etcd.io/etcd/server/v3/etcdserver"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/rafthttp"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v3compactor"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v3discovery"
-	"go.etcd.io/etcd/server/v3/features"
 )
 
 const (

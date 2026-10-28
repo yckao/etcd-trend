@@ -25,10 +25,10 @@ import (
 
 	"go.uber.org/zap/zaptest"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease"
+	betesting "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend/testing"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"go.etcd.io/etcd/server/v3/lease"
-	betesting "go.etcd.io/etcd/server/v3/storage/backend/testing"
 )
 
 // TestWatcherWatchID tests that each watcher provides unique watchID,

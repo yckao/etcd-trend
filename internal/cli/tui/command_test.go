@@ -1,4 +1,4 @@
-package main
+package tuicmd
 
 import (
 	"bytes"
@@ -6,17 +6,19 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
-	"github.com/yckao/etcd-trend/internal/analysis"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/yckao/etcd-trend/internal/analysis"
+	"github.com/yckao/etcd-trend/internal/cli/stdio"
 )
 
 func TestHelpDoesNotRequireTTYOrRun(t *testing.T) {
 	var stderr bytes.Buffer
-	err := run(context.Background(), []string{"--help"}, os.Stdin, os.Stdout, &stderr)
+	err := Run(context.Background(), []string{"--help"}, stdio.Streams{In: os.Stdin, Out: os.Stdout, Err: &stderr})
 	if !errors.Is(err, flag.ErrHelp) || !strings.Contains(stderr.String(), "snapshot") {
 		t.Fatalf("help failed: %v %s", err, stderr.String())
 	}
@@ -24,7 +26,7 @@ func TestHelpDoesNotRequireTTYOrRun(t *testing.T) {
 
 func TestRejectsMissingRunAndInvalidDimensions(t *testing.T) {
 	for _, args := range [][]string{nil, {"--run", "unused", "--width", "1"}, {"--run", "unused", "--height", "10000"}} {
-		if err := run(context.Background(), args, os.Stdin, os.Stdout, &bytes.Buffer{}); err == nil {
+		if err := Run(context.Background(), args, stdio.Streams{In: os.Stdin, Out: os.Stdout, Err: &bytes.Buffer{}}); err == nil {
 			t.Fatal("acceptedinvalidflags")
 		}
 	}
@@ -63,7 +65,7 @@ func TestTenantSnapshotMatchesExplicitEmptyLabel(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer out.Close()
-	err = run(context.Background(), []string{"--snapshot", "--run", root, "--scope", "object", "--namespace", "ns", "--label-key", "tenant", "--label-value", ""}, os.Stdin, out, &bytes.Buffer{})
+	err = Run(context.Background(), []string{"--snapshot", "--run", root, "--scope", "object", "--namespace", "ns", "--label-key", "tenant", "--label-value", ""}, stdio.Streams{In: os.Stdin, Out: out, Err: &bytes.Buffer{}})
 	if err != nil {
 		t.Fatal(err)
 	}

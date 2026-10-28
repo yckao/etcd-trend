@@ -15,9 +15,9 @@
 package apply
 
 import (
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/errors"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/pkg/v3/traceutil"
-	"go.etcd.io/etcd/server/v3/etcdserver/errors"
 )
 
 type applierV3Corrupt struct {

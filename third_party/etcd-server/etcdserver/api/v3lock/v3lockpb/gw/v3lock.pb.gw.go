@@ -13,7 +13,7 @@ import (
 
 	"context"
 	"errors"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v3lock/v3lockpb"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3lock/v3lockpb"
 	"io"
 	"net/http"
 

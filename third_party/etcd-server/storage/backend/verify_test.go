@@ -18,9 +18,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	betesting "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend/testing"
 	"go.etcd.io/etcd/client/pkg/v3/verify"
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	betesting "go.etcd.io/etcd/server/v3/storage/backend/testing"
 )
 
 func TestLockVerify(t *testing.T) {

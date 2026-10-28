@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 	bolt "go.etcd.io/bbolt"
 	"go.etcd.io/etcd/api/v3/mvccpb"
-	"go.etcd.io/etcd/server/v3/storage/schema"
 )
 
 // ReplayMutation describes one actual MVCC backend record. Its transient value

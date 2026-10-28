@@ -17,8 +17,8 @@ package mvcc
 import (
 	"context"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease"
 	"go.etcd.io/etcd/pkg/v3/traceutil"
-	"go.etcd.io/etcd/server/v3/lease"
 )
 
 type readView struct{ kv KV }

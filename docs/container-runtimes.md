@@ -1,6 +1,10 @@
 # Running the image with containerd and CRI-O
 
-`ghcr.io/yckao/etcd-trend:latest` contains the recorder, analyzer, Web UI, TUI, inspector, and isolated fixture tools in one image. Select a command after the image name: `record`, `replay`, `web`, `tui`, or `inspect`. The image supports Linux amd64 and arm64. For repeatable investigations, replace `latest` with the published image digest.
+> **Warning:** This project is entirely vibe-coded and has not received manual human code review.
+
+`ghcr.io/yckao/etcd-trend:latest` contains one application executable, `/usr/local/bin/etcd-trend`, which is also the image entrypoint. Select a subcommand after the image name: `record`, `replay`, `web`, `tui`, `inspect`, `demo`, `loadtest`, or `compat`. The image supports Linux amd64 and arm64. For repeatable investigations, replace `latest` with the published image digest.
+
+The same executable can be installed without a container using `go install github.com/yckao/etcd-trend@latest` or built locally with `make build` as `bin/etcd-trend`. Recording, replay, and exploration remain separate command invocations.
 
 These examples run directly on a Linux host; they do not create Kubernetes API objects. The recorder needs only a read-only WAL mount, a consistent immutable baseline, and a writable capture destination. The offline commands need only completed captures or replay outputs. Do not mount the container runtime socket into the application container.
 

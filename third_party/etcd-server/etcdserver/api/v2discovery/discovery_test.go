@@ -30,8 +30,8 @@ import (
 	"github.com/jonboulle/clockwork"
 	"go.uber.org/zap/zaptest"
 
+	client "github.com/yckao/etcd-trend/third_party/etcd-server/internal/clientv2"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	client "go.etcd.io/etcd/server/v3/internal/clientv2"
 )
 
 const (

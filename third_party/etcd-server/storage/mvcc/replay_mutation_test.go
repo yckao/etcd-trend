@@ -13,9 +13,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 	"go.etcd.io/etcd/pkg/v3/traceutil"
-	"go.etcd.io/etcd/server/v3/lease"
-	"go.etcd.io/etcd/server/v3/storage/backend"
 	"go.uber.org/zap"
 )
 

@@ -23,9 +23,9 @@ import (
 	"github.com/xiang90/probing"
 	"go.uber.org/zap/zaptest"
 
+	stats "github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v2stats"
 	"go.etcd.io/etcd/client/pkg/v3/testutil"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	stats "go.etcd.io/etcd/server/v3/etcdserver/api/v2stats"
 	"go.etcd.io/raft/v3/raftpb"
 )
 

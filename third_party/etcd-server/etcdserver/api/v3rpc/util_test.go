@@ -22,8 +22,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/mvcc"
 	"go.etcd.io/etcd/api/v3/v3rpc/rpctypes"
-	"go.etcd.io/etcd/server/v3/storage/mvcc"
 )
 
 func TestGRPCError(t *testing.T) {

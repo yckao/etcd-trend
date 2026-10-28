@@ -24,8 +24,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	betesting "go.etcd.io/etcd/server/v3/storage/backend/testing"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	betesting "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend/testing"
 )
 
 func TestActionIsReversible(t *testing.T) {

@@ -42,6 +42,10 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/keepalive"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/embed"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3election/v3electionpb"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v3lock/v3lockpb"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/proxy/grpcproxy"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/client/pkg/v3/logutil"
 	"go.etcd.io/etcd/client/pkg/v3/tlsutil"
@@ -51,10 +55,6 @@ import (
 	"go.etcd.io/etcd/client/v3/namespace"
 	"go.etcd.io/etcd/client/v3/ordering"
 	"go.etcd.io/etcd/pkg/v3/debugutil"
-	"go.etcd.io/etcd/server/v3/embed"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v3election/v3electionpb"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v3lock/v3lockpb"
-	"go.etcd.io/etcd/server/v3/proxy/grpcproxy"
 )
 
 var (

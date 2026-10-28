@@ -26,10 +26,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v2store"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/mock/mockstore"
 	"go.etcd.io/etcd/client/pkg/v3/testutil"
 	"go.etcd.io/etcd/client/pkg/v3/types"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v2store"
-	"go.etcd.io/etcd/server/v3/mock/mockstore"
 	"go.etcd.io/raft/v3/raftpb"
 )
 

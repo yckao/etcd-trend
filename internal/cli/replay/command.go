@@ -1,37 +1,27 @@
-package main
+package replaycmd
 
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"math"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/yckao/etcd-trend/internal/analysis"
 	"github.com/yckao/etcd-trend/internal/capture"
+	"github.com/yckao/etcd-trend/internal/cli/stdio"
 	"github.com/yckao/etcd-trend/internal/etcdutil"
 	"github.com/yckao/etcd-trend/internal/replay"
 )
 
-func main() {
-	if err := run(); err != nil {
-		if err == flag.ErrHelp {
-			return
-		}
-		fmt.Fprintln(os.Stderr, "analyzer:", err)
-		os.Exit(1)
-	}
-}
-
-func run() error {
-	fs := flag.NewFlagSet("analyzer", flag.ContinueOnError)
+func Run(ctx context.Context, args []string, streams stdio.Streams) error {
+	streams = streams.WithDefaults()
+	stdout, stderr := streams.Out, streams.Err
+	fs := stdio.Flags("replay", stderr)
 	in := fs.String("capture", "", "completed capture directory")
 	out := fs.String("out", "", "new output directory (must not exist)")
 	speedText := fs.String("speed", "max", "virtual-time pacing: max, 1, 10, 100, ...")
@@ -48,11 +38,11 @@ func run() error {
 		labelKeys = append(labelKeys, strings.Split(value, ",")...)
 		return nil
 	})
-	if err := fs.Parse(os.Args[1:]); err != nil {
+	if err := fs.Parse(args); err != nil {
 		return err
 	}
 	if fs.NArg() != 0 || *in == "" || *out == "" {
-		return fmt.Errorf("usage: analyzer --capture DIR --out NEW_DIR [--speed max|N]")
+		return fmt.Errorf("usage: etcd-trend replay --capture DIR --out NEW_DIR [--speed max|N]")
 	}
 	if *window <= 0 || *top < 1 || *top > 100 {
 		return fmt.Errorf("window must be positive and top must be 1-100")
@@ -92,8 +82,6 @@ func run() error {
 			return err
 		}
 	}
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
 	if _, err := os.Lstat(*out); err == nil {
 		return fmt.Errorf("output directory already exists: %s", *out)
 	} else if !os.IsNotExist(err) {
@@ -122,7 +110,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	return json.NewEncoder(os.Stdout).Encode(struct {
+	return json.NewEncoder(stdout).Encode(struct {
 		Output            string `json:"output"`
 		Revision          int64  `json:"revision"`
 		Applied           int    `json:"applied_entries"`

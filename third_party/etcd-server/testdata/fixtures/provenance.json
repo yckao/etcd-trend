@@ -1,0 +1,36 @@
+{
+  "source_commit": "f5d605a93abe2fdfa13880aab0f1f3a4203628dd",
+  "source_directory": "https://github.com/etcd-io/etcd/tree/f5d605a93abe2fdfa13880aab0f1f3a4203628dd/tests/fixtures",
+  "files": {
+    "ed25519-private-key.pem": {
+      "source": "https://raw.githubusercontent.com/etcd-io/etcd/f5d605a93abe2fdfa13880aab0f1f3a4203628dd/tests/fixtures/ed25519-private-key.pem",
+      "git_blob_sha1": "1596cd455f5761498f78e8f3a6ef6b2b1ddbe52c",
+      "sha256": "d349c914f91616c9f1e2eea7c7d9d6435e5547c0497bb063dbb9def80e9b92de"
+    },
+    "ed25519-public-key.pem": {
+      "source": "https://raw.githubusercontent.com/etcd-io/etcd/f5d605a93abe2fdfa13880aab0f1f3a4203628dd/tests/fixtures/ed25519-public-key.pem",
+      "git_blob_sha1": "5563956f25cbb0af80e37eec7b71b2109ed48b55",
+      "sha256": "0758e2571101075ec111763c5b43264b4dcdadcc09460cb43b5fd45b28f2ec0a"
+    },
+    "server-ecdsa.crt": {
+      "source": "https://raw.githubusercontent.com/etcd-io/etcd/f5d605a93abe2fdfa13880aab0f1f3a4203628dd/tests/fixtures/server-ecdsa.crt",
+      "git_blob_sha1": "8900d7a91b5770a775461eaef9e09ed21d414827",
+      "sha256": "ba9afbbb257dd80c71a3d70edc4c2d248e8c928398ed2667ce9820421d54b79b"
+    },
+    "server-ecdsa.key.insecure": {
+      "source": "https://raw.githubusercontent.com/etcd-io/etcd/f5d605a93abe2fdfa13880aab0f1f3a4203628dd/tests/fixtures/server-ecdsa.key.insecure",
+      "git_blob_sha1": "9f6b0f8a56baaa372c7fcd933f002e8c65579c0a",
+      "sha256": "818d54f99a121fa90b17fa92edd8081153601a92bcbea4805d59a79d3ea7f5f2"
+    },
+    "server.crt": {
+      "source": "https://raw.githubusercontent.com/etcd-io/etcd/f5d605a93abe2fdfa13880aab0f1f3a4203628dd/tests/fixtures/server.crt",
+      "git_blob_sha1": "04c3d7b6f49c2efe9fd31548120901d5ed76b29d",
+      "sha256": "81f48a82cbfec2e29b370b62ab79ebcce6630d3804795588d5dfc8e3b2cace25"
+    },
+    "server.key.insecure": {
+      "source": "https://raw.githubusercontent.com/etcd-io/etcd/f5d605a93abe2fdfa13880aab0f1f3a4203628dd/tests/fixtures/server.key.insecure",
+      "git_blob_sha1": "b52bdc79d0c2c8676f7912efcd28fd60480b5794",
+      "sha256": "3bf06e3687fce3cdd050e32b6f9dfa4eeb0787ee5fd514840b50bae167db3874"
+    }
+  }
+}

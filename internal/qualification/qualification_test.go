@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/yckao/etcd-trend/internal/fixture"
-	"go.etcd.io/etcd/server/v3/storage/wal"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/wal"
 )
 
 func TestRecordAndReplayRealEtcdAtDifferentSpeeds(t *testing.T) {

@@ -20,8 +20,8 @@ import (
 	humanize "github.com/dustin/go-humanize"
 	"go.uber.org/zap"
 
-	"go.etcd.io/etcd/server/v3/etcdserver/api/snap"
-	"go.etcd.io/etcd/server/v3/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/snap"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 	"go.etcd.io/raft/v3/raftpb"
 )
 

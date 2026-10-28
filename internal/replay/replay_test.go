@@ -11,13 +11,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/membership"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/mvcc"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 	bolt "go.etcd.io/bbolt"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
 	"go.etcd.io/etcd/api/v3/membershippb"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/membership"
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	"go.etcd.io/etcd/server/v3/storage/mvcc"
-	"go.etcd.io/etcd/server/v3/storage/schema"
 	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap"
 )

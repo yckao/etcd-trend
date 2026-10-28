@@ -24,13 +24,13 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/embed"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/v2discovery"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/errors"
 	"go.etcd.io/etcd/client/pkg/v3/fileutil"
 	"go.etcd.io/etcd/client/pkg/v3/logutil"
 	"go.etcd.io/etcd/client/pkg/v3/types"
 	"go.etcd.io/etcd/pkg/v3/osutil"
-	"go.etcd.io/etcd/server/v3/embed"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/v2discovery"
-	"go.etcd.io/etcd/server/v3/etcdserver/errors"
 )
 
 type dirType string

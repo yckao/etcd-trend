@@ -19,7 +19,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"go.etcd.io/etcd/server/v3/storage/datadir"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/datadir"
 )
 
 func TestToBackendFileName(t *testing.T) {

@@ -23,8 +23,8 @@ import (
 	"github.com/jonboulle/clockwork"
 	"go.uber.org/zap"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/mvcc"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
-	"go.etcd.io/etcd/server/v3/storage/mvcc"
 )
 
 // Periodic compacts the log by purging revisions older than

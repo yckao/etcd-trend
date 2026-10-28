@@ -4,25 +4,27 @@ Both interfaces read a **completed analyzer output directory** containing `repor
 
 ## Start
 
+`make build` creates the single `bin/etcd-trend` executable. Alternatively, install it with `go install github.com/yckao/etcd-trend@latest` and use `etcd-trend` in place of `bin/etcd-trend` below; the Go binary installation directory must be on your `PATH`.
+
 ```sh
 make build
 
 # Produce object analysis if it is not already available.
-bin/analyzer --capture captures/session --out runs/session \
+bin/etcd-trend replay --capture captures/session --out runs/session \
   --window 1m --top 20 --speed max
 
 # Local Web UI: prints the selected loopback URL.
-bin/etcd-trend-web --run runs/session
+bin/etcd-trend web --run runs/session
 
 # Interactive terminal UI.
-bin/etcd-trend-tui --run runs/session
+bin/etcd-trend tui --run runs/session
 ```
 
 For the preserved demonstration in this workspace:
 
 ```sh
-bin/etcd-trend-web --run artifacts/object-analysis-native-final
-bin/etcd-trend-tui --run artifacts/object-analysis-native-final
+bin/etcd-trend web --run artifacts/object-analysis-native-final
+bin/etcd-trend tui --run artifacts/object-analysis-native-final
 ```
 
 The longer multi-tenant demonstration uses `artifacts/long-multitenant-10m-validated/replay-tenants`. It contains a real ten-minute source workload, five changing workload phases, and metadata extracted with synthetic label keys. Start either viewer with that directory to explore tenant behavior over time.
@@ -71,14 +73,14 @@ In the Web UI, **Group by** adds namespace, API group, kind, object label, names
 Labels are configured when running the analyzer, not fetched by the UI:
 
 ```sh
-bin/analyzer --capture captures/session --out runs/tenants \
+bin/etcd-trend replay --capture captures/session --out runs/tenants \
   --window 5s --speed max \
   --label-key example.com/tenant --label-key example.com/team
 
-bin/etcd-trend-tui --run runs/tenants --scope namespace-label \
+bin/etcd-trend tui --run runs/tenants --scope namespace-label \
   --label-key example.com/tenant
 
-bin/etcd-trend-tui --run runs/tenants --snapshot --scope object \
+bin/etcd-trend tui --run runs/tenants --snapshot --scope object \
   --namespace team-a --label-key example.com/team --label-value platform
 ```
 
@@ -124,7 +126,7 @@ Existing bindings remain available: arrows mirror `j/k/h/l`, Page Down/Page Up m
 For a reproducible plain-text view of the last demonstration window:
 
 ```sh
-bin/etcd-trend-tui --run artifacts/object-analysis-native-final \
+bin/etcd-trend tui --run artifacts/object-analysis-native-final \
   --snapshot --from 3 --to 4 --metric free-net --scope object
 ```
 

@@ -37,19 +37,19 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 
+	"github.com/yckao/etcd-trend/third_party/etcd-server/config"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/etcdhttp"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/etcdserver/api/rafthttp"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/features"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/verify"
 	"go.etcd.io/etcd/api/v3/version"
 	"go.etcd.io/etcd/client/pkg/v3/transport"
 	"go.etcd.io/etcd/client/pkg/v3/types"
 	"go.etcd.io/etcd/client/v3/credentials"
 	"go.etcd.io/etcd/pkg/v3/debugutil"
 	runtimeutil "go.etcd.io/etcd/pkg/v3/runtime"
-	"go.etcd.io/etcd/server/v3/config"
-	"go.etcd.io/etcd/server/v3/etcdserver"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/etcdhttp"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/rafthttp"
-	"go.etcd.io/etcd/server/v3/features"
-	"go.etcd.io/etcd/server/v3/storage"
-	"go.etcd.io/etcd/server/v3/verify"
 )
 
 const (

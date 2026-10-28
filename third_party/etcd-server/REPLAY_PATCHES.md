@@ -7,6 +7,36 @@ This directory contains `go.etcd.io/etcd/server/v3` v3.6.0, module checksum
 The upstream license and source headers are retained. The changes below are
 opt-in; normal etcd defaults do not activate the replay behavior.
 
+## Module packaging
+
+The patched server sources are part of the `github.com/yckao/etcd-trend` module,
+under `github.com/yckao/etcd-trend/third_party/etcd-server`. Go import paths for
+this source tree and its callers use that prefix. The upstream module files are
+preserved as `go.mod.upstream.txt` and `go.sum.upstream.txt` for provenance; they
+are not active module boundaries. The root module has no replacement directive
+or dependency on the upstream server module. Consequently, versioned
+`go install github.com/yckao/etcd-trend@VERSION` includes the
+patched engine in one downloadable module without resolving a local replace.
+
+This is a packaging change. It preserves the upstream protobuf schemas,
+registration names, wire formats, licenses, tests, and replay behavior. The
+original protobuf `go_package` metadata is retained with the upstream schemas;
+compiled Go imports are the project-local paths described above.
+
+The server module archive did not contain the sibling repository fixtures used
+by its JWT tests. Six unchanged public test certificates/keys from the same
+upstream commit are restored under `testdata/fixtures`, with hashes and source
+URLs in `provenance.json`. `auth/jwt_test.go` uses that package-relative
+location, including when tests run from a downloaded module. No upstream tests
+are excluded by build tags or package selection.
+
+`embed/config_test.go` checks the invalid log-size configuration using
+`json.UnmarshalTypeError` fields rather than an exact diagnostic string: Go
+1.26 adds the embedded `Logger` name to the reported JSON field path. The same
+invalid configuration remains rejected; production code is unchanged.
+
+## Replay behavior
+
 - `storage/backend/backend.go`: optional manual commit scheduling and completed
   commit observer. The default wall-clock timer is disabled only in replay mode.
 - `storage/backend/replay.go`: pending-work timer tick and commit observations

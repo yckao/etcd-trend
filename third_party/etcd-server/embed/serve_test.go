@@ -22,7 +22,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"go.etcd.io/etcd/server/v3/auth"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/auth"
 )
 
 // TestStartEtcdWrongToken ensures that StartEtcd with wrong configs returns with error.

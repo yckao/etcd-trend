@@ -14,7 +14,7 @@
 
 package schema
 
-import "go.etcd.io/etcd/server/v3/storage/backend"
+import "github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
 
 type schemaChange interface {
 	upgradeAction() action

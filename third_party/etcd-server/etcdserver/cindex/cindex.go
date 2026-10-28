@@ -18,8 +18,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	"go.etcd.io/etcd/server/v3/storage/schema"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 )
 
 type Backend interface {

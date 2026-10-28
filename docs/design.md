@@ -8,7 +8,7 @@ The implementation includes recording, accelerated replay, and object/resource a
 
 | Area | Decision |
 | --- | --- |
-| Deployment | Two Go executables: recorder and analyzer. The recorder starts a recording session; it does not start, stop, or reconfigure etcd. |
+| Deployment | One Go executable, `etcd-trend`, with `record`, `replay`, `web`, `tui`, `inspect`, `demo`, `loadtest`, and `compat` subcommands. Recording and analysis run as separate invocations. The recorder starts a recording session; it does not start, stop, or reconfigure etcd. |
 | Production access | Capture persisted files through a snapshot provider and a WAL archiver. No etcd Watch, keyspace Range, replication membership change, or recorder initiated maintenance. |
 | Replay engine | Reuse the pinned etcd apply, MVCC, backend, and bbolt implementations. Maintain narrowly scoped analyzer-only adaptations for scheduling and observations. |
 | Time | Use virtual time for simulation. Playback pacing supports 1x, accelerated rates, and an unpaced maximum-speed mode. |
@@ -20,6 +20,8 @@ The implementation includes recording, accelerated replay, and object/resource a
 Source compatibility covers stable etcd 3.4.x, 3.5.x, and 3.6.x. The storage simulation remains pinned to etcd v3.6.0. The report identifies both versions: it measures the captured workload under the 3.6.0 model, rather than claiming the original release's exact physical layout. Representative actual source releases are exercised by the compatibility fixture; accepting a patch version is not proof that every operation in every patch has been qualified.
 
 Older sources encode some cluster-version and member-attribute metadata as legacy v2 requests. The adapter translates those internal requests into the corresponding membership operations. Genuine v2 user-keyspace writes are rejected. Offline baseline recovery skips serving-member upgrade gates through an explicit replay-only path; it does not turn the analyzer into a cluster upgrade mechanism.
+
+The root Go module builds the complete executable and supports `go install github.com/yckao/etcd-trend@latest`. The adapted etcd server source remains under `third_party/etcd-server` as packages in that module. The container image invokes the same executable directly; no command-dispatch shell script or separate application binaries are required.
 
 ## Data flow
 

@@ -19,9 +19,9 @@ import (
 	"sync"
 	"time"
 
-	"go.etcd.io/etcd/server/v3/lease/leasepb"
-	"go.etcd.io/etcd/server/v3/storage/backend"
-	"go.etcd.io/etcd/server/v3/storage/schema"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/lease/leasepb"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/backend"
+	"github.com/yckao/etcd-trend/third_party/etcd-server/storage/schema"
 )
 
 type Lease struct {

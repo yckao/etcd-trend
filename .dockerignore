@@ -4,8 +4,7 @@
 !.dockerignore
 !go.mod
 !go.sum
-!cmd/
-!cmd/**
+!main.go
 !internal/
 !internal/**
 !third_party/
